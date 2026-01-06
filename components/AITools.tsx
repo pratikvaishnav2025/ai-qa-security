@@ -82,19 +82,19 @@ const GherkinVisualizer: React.FC<{ rawText: string }> = ({ rawText }) => {
 
   if (feature.scenarios.length === 0) return (
     <div className="flex flex-col items-center justify-center h-full py-24 text-slate-500">
-      <p className="text-xs font-bold uppercase tracking-widest text-center px-4">No valid Gherkin found for visualization</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-center px-4 opacity-30">No valid behavioral map found.</p>
     </div>
   );
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-[500px] overflow-auto bg-slate-950/20 rounded-3xl border border-cyan-500/10 p-6 sm:p-10 relative">
+    <div ref={containerRef} className="w-full h-full min-h-[500px] overflow-auto bg-slate-950/20 rounded-3xl p-6 sm:p-10 relative">
       <div className="flex flex-col items-center min-w-[800px]">
         
         <div className="relative z-20 group mb-24">
           <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
           <div className="relative bg-slate-900 border border-cyan-500/50 px-10 py-5 rounded-2xl shadow-2xl flex flex-col items-center">
-            <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em] mb-2">Audit Vector</span>
-            <h4 className="text-white font-black text-lg text-center max-w-md leading-tight">{feature.name}</h4>
+            <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-[0.3em] mb-2">Audit Vector</span>
+            <h4 className="text-white font-bold text-lg text-center max-w-md leading-tight uppercase">{feature.name}</h4>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ const GherkinVisualizer: React.FC<{ rawText: string }> = ({ rawText }) => {
                   d={`M 50% 0 C 50% 50, ${xPos} 50, ${xPos} 96`}
                   fill="none"
                   stroke="rgba(6, 182, 212, 0.4)"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   className="animate-pulse"
                 />
               );
@@ -119,15 +119,15 @@ const GherkinVisualizer: React.FC<{ rawText: string }> = ({ rawText }) => {
 
           {feature.scenarios.map((scenario, sIdx) => (
             <div key={sIdx} className="relative flex flex-col items-center w-full max-w-[320px]">
-              <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/50 p-8 rounded-[2rem] w-full hover:border-cyan-500/50 transition-all duration-500 shadow-xl group">
+              <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] w-full hover:border-cyan-500/50 transition-all duration-500 shadow-xl group">
                 <div className="flex justify-between items-start mb-8">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-black text-xs">{sIdx + 1}</div>
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs">{sIdx + 1}</div>
                 </div>
-                <h5 className="text-white font-bold text-base mb-8 leading-tight group-hover:text-cyan-400 transition-colors">{scenario.name}</h5>
+                <h5 className="text-white font-bold text-sm mb-8 leading-tight group-hover:text-cyan-400 transition-colors uppercase tracking-tight">{scenario.name}</h5>
                 <div className="space-y-6">
                   {scenario.steps.map((step, tIdx) => (
                     <div key={tIdx} className="flex gap-4 items-start relative">
-                      <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center border text-[8px] font-black uppercase transition-colors ${
+                      <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center border text-[8px] font-bold uppercase transition-colors ${
                         step.keyword.toLowerCase() === 'given' ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' :
                         step.keyword.toLowerCase() === 'when' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
                         step.keyword.toLowerCase() === 'then' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 
@@ -136,7 +136,7 @@ const GherkinVisualizer: React.FC<{ rawText: string }> = ({ rawText }) => {
                         {step.keyword[0]}
                       </div>
                       <div>
-                        <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{step.keyword}</span>
+                        <span className="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">{step.keyword}</span>
                         <p className="text-[12px] text-slate-300 leading-relaxed font-medium">{step.text}</p>
                       </div>
                     </div>
@@ -208,7 +208,7 @@ export const AITools: React.FC = () => {
       else if (activeTab === AIToolType.ARCH_COPILOT) result = await generateArchitectureDesign(input);
       setOutput(result);
     } catch (error) {
-      setOutput("Error: Node timeout. Verify GEMINI_API_KEY.");
+      setOutput("Error: Security Node Connection Refused. Verify API_KEY.");
     } finally {
       setLoading(false);
     }
@@ -222,21 +222,22 @@ export const AITools: React.FC = () => {
   }, [output, activeTab]);
 
   return (
-    <section id="ai-tools" className="py-24 sm:py-32 lg:py-48 px-4 bg-slate-950 border-y border-cyan-500/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="ai-tools" className="py-24 sm:py-32 lg:py-48 px-4 bg-slate-950 border-y border-slate-900">
+      <div className="responsive-container">
         <div className="mb-20 flex flex-col md:flex-row justify-between items-center md:items-end gap-10 text-center md:text-left">
           <div className="max-w-xl">
-            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-white tracking-tighter uppercase leading-tight">Security Intelligence Engine</h2>
-            <p className="text-slate-400 text-lg sm:text-xl font-medium leading-relaxed">AI-powered auditor for automated vulnerability research and architectural modeling.</p>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tighter uppercase leading-[0.9]">Security <br className="hidden sm:block"/>Engine</h2>
+            <p className="text-slate-400 text-lg sm:text-xl font-medium leading-relaxed">Vulnerability research and behavioral modeling via Gemini 3 Flash.</p>
           </div>
-          <div className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-500 font-mono text-[10px] uppercase tracking-widest whitespace-nowrap">
-            MODEL: GEMINI_3_FLASH // STATUS: READY
+          <div className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-500 font-mono text-[10px] uppercase tracking-widest whitespace-nowrap shadow-[0_0_15px_rgba(6,182,212,0.05)]">
+            STATE: READY // MODEL: v3.0F
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-stretch">
-          <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 sm:p-12 flex flex-col shadow-2xl">
-            <div className="flex p-1.5 bg-slate-950 rounded-2xl mb-10 flex-wrap gap-1 border border-slate-800">
+          {/* Input Panel */}
+          <div className="lg:col-span-5 dashboard-panel rounded-[2.5rem] p-8 sm:p-12 flex flex-col">
+            <div className="flex p-1.5 bg-slate-950/50 rounded-2xl mb-10 flex-wrap gap-1 border border-slate-900">
               {[
                 { id: AIToolType.GHERKIN_GEN, label: 'Audit Spec' },
                 { id: AIToolType.VULN_AUDIT, label: 'Vuln Scan' },
@@ -246,7 +247,7 @@ export const AITools: React.FC = () => {
                 <button 
                   key={tab.id}
                   onClick={() => { setActiveTab(tab.id); setInput(''); setOutput(''); setViewMode('CODE'); }}
-                  className={`flex-1 min-w-[100px] px-4 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all ${activeTab === tab.id ? 'bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'text-slate-500 hover:text-slate-300'}`}
+                  className={`flex-1 min-w-[100px] px-4 py-3 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all ${activeTab === tab.id ? 'bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'text-slate-500 hover:text-slate-300'}`}
                 >
                   {tab.label}
                 </button>
@@ -255,52 +256,53 @@ export const AITools: React.FC = () => {
 
             <div className="flex-grow flex flex-col gap-8">
               <div className="flex justify-between items-center px-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Target Payload</label>
-                <button onClick={() => setInput(SAMPLES[activeTab])} className="text-[10px] font-black text-cyan-500 hover:text-cyan-400 border-b border-transparent hover:border-cyan-400 pb-0.5 transition-all uppercase">LOAD_SAMPLE.dat</button>
+                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">Payload Input</label>
+                <button onClick={() => setInput(SAMPLES[activeTab])} className="text-[10px] font-bold text-cyan-500/60 hover:text-cyan-400 transition-all uppercase tracking-widest">LOAD_MOCK.dat</button>
               </div>
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="w-full flex-grow bg-slate-950 border border-slate-800 rounded-3xl p-8 text-sm sm:text-base mono text-cyan-500/90 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none placeholder-slate-800 resize-none min-h-[300px] lg:min-h-[400px] transition-all"
-                placeholder="Enter protocol requirements or code snippets..."
+                className="w-full flex-grow bg-slate-950/50 border border-slate-900 rounded-[2rem] p-8 text-sm sm:text-base mono text-cyan-500/80 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none placeholder-slate-800 resize-none min-h-[300px] lg:min-h-[400px] transition-all"
+                placeholder="Enter requirements or code snippet..."
               />
               <button
                 onClick={handleProcess}
                 disabled={loading || !input.trim()}
-                className="w-full py-6 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-800 text-slate-950 font-black uppercase tracking-widest transition-all rounded-[1.5rem] relative overflow-hidden active:scale-[0.98]"
+                className="w-full py-6 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-900 disabled:text-slate-700 text-slate-950 font-bold uppercase tracking-widest transition-all rounded-2xl relative overflow-hidden active:scale-[0.98]"
               >
                 {loading && (
-                  <div className="absolute inset-0 bg-cyan-600/50 flex items-center justify-start">
-                    <div className="h-full bg-cyan-200/50 transition-all duration-700" style={{ width: `${(loadingStage + 1) * 20}%` }} />
+                  <div className="absolute inset-0 bg-cyan-600/30 flex items-center justify-start">
+                    <div className="h-full bg-cyan-100/30 transition-all duration-700" style={{ width: `${(loadingStage + 1) * 20}%` }} />
                   </div>
                 )}
-                <span className="relative z-10 text-sm sm:text-base">{loading ? LOADING_MESSAGES[activeTab][loadingStage] : "Execute Audit"}</span>
+                <span className="relative z-10 text-xs sm:text-sm">{loading ? LOADING_MESSAGES[activeTab][loadingStage] : "Execute Research"}</span>
               </button>
             </div>
           </div>
 
-          <div className="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-[2.5rem] flex flex-col overflow-hidden relative shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
-            <div className="p-6 sm:p-8 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-6 bg-slate-900/50">
+          {/* Output Panel */}
+          <div className="lg:col-span-7 bg-slate-950 border border-slate-900 rounded-[2.5rem] flex flex-col overflow-hidden relative shadow-2xl">
+            <div className="p-6 sm:p-8 border-b border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-6 bg-slate-900/20">
               <div className="flex gap-6 items-center w-full sm:w-auto justify-center sm:justify-start">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Output_Buffer</span>
+                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">Output_Buffer</span>
                 {activeTab === AIToolType.GHERKIN_GEN && output && (
                   <div className="flex bg-slate-950 rounded-xl p-1 border border-slate-800">
-                    <button onClick={() => setViewMode('CODE')} className={`px-4 py-2 rounded-lg text-[10px] font-black transition-all ${viewMode === 'CODE' ? 'bg-cyan-500 text-slate-950' : 'text-slate-500'}`}>CODE</button>
-                    <button onClick={() => setViewMode('VISUAL')} className={`px-4 py-2 rounded-lg text-[10px] font-black transition-all ${viewMode === 'VISUAL' ? 'bg-cyan-500 text-slate-950' : 'text-slate-500'}`}>MAP</button>
+                    <button onClick={() => setViewMode('CODE')} className={`px-4 py-2 rounded-lg text-[10px] font-bold transition-all ${viewMode === 'CODE' ? 'bg-cyan-500 text-slate-950' : 'text-slate-500'}`}>CODE</button>
+                    <button onClick={() => setViewMode('VISUAL')} className={`px-4 py-2 rounded-lg text-[10px] font-bold transition-all ${viewMode === 'VISUAL' ? 'bg-cyan-500 text-slate-950' : 'text-slate-500'}`}>MAP</button>
                   </div>
                 )}
               </div>
               {output && (
-                <button onClick={() => { navigator.clipboard.writeText(output); setCopied(true); setTimeout(()=>setCopied(false),2000); }} className="w-full sm:w-auto px-6 py-2 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-black text-cyan-500 hover:text-cyan-400 transition-all uppercase tracking-widest">
-                  {copied ? 'BUFFER_COPIED' : 'DOWNLOAD_LOGS.bin'}
+                <button onClick={() => { navigator.clipboard.writeText(output); setCopied(true); setTimeout(()=>setCopied(false),2000); }} className="w-full sm:w-auto px-6 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-[10px] font-bold text-cyan-500 hover:text-cyan-400 transition-all uppercase tracking-widest">
+                  {copied ? 'LOGS_COPIED' : 'EXPORT_LOGS.bin'}
                 </button>
               )}
             </div>
             
-            <div className="flex-grow flex flex-col overflow-hidden bg-slate-950">
+            <div className="flex-grow flex flex-col overflow-hidden bg-slate-950/50">
               {activeTab === AIToolType.ARCH_COPILOT && output && (
-                 <div ref={mermaidRef} className="p-10 bg-white/[0.02] border-b border-slate-900 min-h-[350px] flex items-center justify-center overflow-x-auto relative">
-                    <div className="absolute top-6 left-6 text-[8px] font-black text-cyan-500/40 uppercase tracking-[0.3em]">Topology Visualization</div>
+                 <div ref={mermaidRef} className="p-10 bg-white/[0.01] border-b border-slate-900 min-h-[350px] flex items-center justify-center overflow-x-auto relative">
+                    <div className="absolute top-6 left-6 text-[8px] font-bold text-cyan-500/20 uppercase tracking-[0.5em]">Topology Graph</div>
                  </div>
               )}
               <div className="flex-grow overflow-y-auto max-h-[700px] relative custom-scrollbar">
@@ -308,24 +310,24 @@ export const AITools: React.FC = () => {
                   viewMode === 'VISUAL' && activeTab === AIToolType.GHERKIN_GEN ? (
                     <div className="p-4 h-full"><GherkinVisualizer rawText={gherkinText} /></div>
                   ) : (
-                    <div className="p-8 sm:p-12 text-sm sm:text-base mono leading-relaxed text-slate-300 whitespace-pre-wrap selection:bg-cyan-500/20">{output.replace(/```mermaid[\s\S]*?```/g, '')}</div>
+                    <div className="p-8 sm:p-12 text-sm sm:text-base mono leading-relaxed text-slate-400 whitespace-pre-wrap selection:bg-cyan-500/20">{output.replace(/```mermaid[\s\S]*?```/g, '')}</div>
                   )
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-slate-800 py-32 lg:py-48 px-10">
                     {loading ? (
                       <div className="flex flex-col items-center gap-10">
                         <div className="relative">
-                          <div className="w-16 h-16 border-4 border-cyan-500/10 rounded-full"></div>
+                          <div className="w-16 h-16 border-4 border-cyan-500/5 rounded-full"></div>
                           <div className="absolute inset-0 w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
-                        <span className="text-[11px] font-black text-cyan-500 uppercase tracking-[0.4em] animate-pulse text-center">{LOADING_MESSAGES[activeTab][loadingStage]}</span>
+                        <span className="text-[11px] font-bold text-cyan-500/60 uppercase tracking-[0.4em] animate-pulse text-center">{LOADING_MESSAGES[activeTab][loadingStage]}</span>
                       </div>
                     ) : (
                       <>
-                        <div className="w-24 h-24 border-2 border-slate-900 rounded-full flex items-center justify-center opacity-20 mb-10">
+                        <div className="w-24 h-24 border-2 border-slate-900 rounded-full flex items-center justify-center opacity-10 mb-10">
                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15l-3-3m0 0l3-3m-3 3h8M5 12h1m14 0h1" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/></svg>
                         </div>
-                        <p className="text-[11px] font-black uppercase tracking-[0.4em] text-center max-w-xs opacity-40">Security Engine Standby. Awaiting requirements payload.</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-center max-w-xs opacity-20">Security Node Standby. Initialize Payload.</p>
                       </>
                     )}
                   </div>
